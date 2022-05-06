@@ -43,6 +43,7 @@ def schedule_content(request):
         topic = data['topic']
         content_text = data["content_text"]
         publish_time = get_aware_datetime(data["time"])
+
         cnt_time = contentandtimeperTopic(topic=topic,content_text=content_text,publish_time=publish_time)
         cnt_time.save()
 
@@ -51,8 +52,8 @@ def schedule_content(request):
         print("sending mail to", receivers)
         mail_sub = topic
         mail_txt = content_text
-
-        set_schedule(2022,5,6,14,49,mail_sub,mail_txt,receivers)
+        s_t = publish_time
+        set_schedule(s_t.year,s_t.month,s_t.day,s_t.hour,s_t.minute,mail_sub,mail_txt,receivers)
     # "CureLink", "Hi, This is a test email",
 
 
