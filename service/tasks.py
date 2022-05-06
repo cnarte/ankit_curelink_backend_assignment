@@ -1,57 +1,61 @@
 
-# from celery import task
-# from celery.utils.log import get_task_logger 
-# from time import *
-
-# from .celery.send_mail import send_mail_to
+from django.dispatch import receiver
+from .celery.send_mail import send_mail_to
 
 
-# sleeplogger = get_task_logger(__name__)@task(name='my_first_task')
+# import string
+# from django.contrib.auth.models import User
+# from django.utils.crypto import get_random_string
+
+
+# from celery.schedules import crontab
+# # from celery.app.base import add_periodic_task as periodic_task
+# # from celery.decorators import periodic_task
+# from celery import shared_task
+
+# @shared_task()
+# def create_random_user_accounts(total):
+#     print(total)
+#     # for i in range(total):
+#     #     username = 'user_{}'.format(get_random_string(10, string.ascii_letters))
+#     #     email = '{}@example.com'.format(username)
+#     #     password = get_random_string(50)
+#     #     User.objects.create_user(username=username, email=email, password=password)
+#     return '{} random users created with success!'.format (total)
 
 
 
 
+# @periodic_task(run_every=(crontab(minute='*/15')), name="some_task", ignore_result=True)
+# def some_task():
+#     pass
+#     # do something
+ 
+from datetime import date
 
-# def my_first_task(duration):
-#     subject= 'Celery'
-#     message= 'My task done successfully'
-#     receivers= ['receiver_mail@gmail.com']
-#     is_task_completed= False
-#     error=''    
-#     try:
-#         sleep(duration)
-#         is_task_completed= True
-#     except Exception as err:
-#         error= str(err)
-#         logger.error(error)    
-    
-#     if is_task_completed:
-#         send_mail_to(subject,message,receivers)
-#     else:
-#         send_mail_to(subject,error,receivers)    
-#         return('first_task_done')
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
-import string
-from django.contrib.auth.models import User
-from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from curelink.settings import EMAIL_HOST_USER
 
 
-from celery import crontab
-from celery import periodic_task
 
-from celery import shared_task
+def set_schedule(year,month,day,hour,minute,mail_sub,mail_txt,recvrs):
 
-@shared_task
-def create_random_user_accounts(total):
-    print(total)
-    # for i in range(total):
-    #     username = 'user_{}'.format(get_random_string(10, string.ascii_letters))
-    #     email = '{}@example.com'.format(username)
-    #     password = get_random_string(50)
-    #     User.objects.create_user(username=username, email=email, password=password)
-    return '{} random users created with success!'.format (total)
+    sched = BackgroundScheduler()
 
 
-@periodic_task(run_every=(crontab(minute='*/15')), name="some_task", ignore_result=True)
-def some_task():
-    # do something
+    # The job will be executed on November 6th, 2009
+    receivers = ["akchy.54@gmail.com"]
+    # for rec in receivers:
+            
+    sched.add_job(send_mail_to, 'cron', month=month, day=day, hour=hour,minute=minute,args=[mail_sub,mail_txt, recvrs])
+    sched.start()
+    sched.print_jobs()
+# scc = BackgroundScheduler()
+
+# @scc.scheduled_job('cron', day_of_week='mon-fri', hour=17, minute=0)
+# def send_mail_to(subject, message, receivers):
+#     send_mail(subject,message,EMAIL_HOST_USER,[receivers],
+#     fail_silently= False)

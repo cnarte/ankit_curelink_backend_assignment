@@ -46,8 +46,11 @@ def schedule_content(request):
         cnt_time = contentandtimeperTopic(topic=topic,content_text=content_text,publish_time=publish_time)
         cnt_time.save()
 
-        create_random_user_accounts.delay("total")
-
+        #schedule the cron job or clery job here with use of tasks file
+        
+        
+        set_schedule(2022,5,6,14,49)
+    # "CureLink", "Hi, This is a test email",
 
 
         return JsonResponse({"response":'sucess',"data":data},status= status.HTTP_201_CREATED)
