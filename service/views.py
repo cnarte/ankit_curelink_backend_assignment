@@ -47,9 +47,12 @@ def schedule_content(request):
         cnt_time.save()
 
         #schedule the cron job or clery job here with use of tasks file
-        
-        
-        set_schedule(2022,5,6,14,49)
+        receivers = userandtopic.objects.filter(topic=topic).values('user_mail')
+        print("sending mail to", receivers)
+        mail_sub = topic
+        mail_txt = content_text
+
+        set_schedule(2022,5,6,14,49,mail_sub,mail_txt,receivers)
     # "CureLink", "Hi, This is a test email",
 
 
